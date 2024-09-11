@@ -48,7 +48,18 @@ const SnakeComponent = () => {
 
 
     const isOppositeDirection = (newDirection: string, currentDirection: string) => {
-        return newDirection === currentDirection;
+        switch (newDirection) {
+            case 'UP':
+                return currentDirection === 'DOWN';
+            case 'DOWN':
+                return currentDirection === 'UP';
+            case 'LEFT':
+                return currentDirection === 'RIGHT';
+            case 'RIGHT':
+                return currentDirection === 'LEFT';
+            default:
+                return false;
+        }
     };
 
 
