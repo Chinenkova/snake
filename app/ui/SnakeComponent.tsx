@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const gridSize = 40;
 const tileSize = 20;
@@ -156,14 +156,14 @@ const SnakeComponent = () => {
         return () => clearTimeout(timeout);
     }, [snake, direction]);
 
-    const endGame = () => {
-        clearInterval(timer.current);
-        if (!canvasRef.current) return;
-        const ctx = canvasRef.current.getContext('2d');
-        if (!ctx) return;
-        ctx.clearRect(0, 0, canvasRef.current.clientWidth, canvasRef.current.clientHeight);
-        restoreInitialValues();
-    }
+    // const endGame = () => {
+    //     clearInterval(timer.current);
+    //     if (!canvasRef.current) return;
+    //     const ctx = canvasRef.current.getContext('2d');
+    //     if (!ctx) return;
+    //     ctx.clearRect(0, 0, canvasRef.current.clientWidth, canvasRef.current.clientHeight);
+    //     restoreInitialValues();
+    // }
 
     const restoreInitialValues = () => {
         setDirection('RIGHT');
