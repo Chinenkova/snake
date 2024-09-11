@@ -8,7 +8,6 @@ type Direction = 'LEFT' | 'RIGHT' | 'UP' | 'DOWN';
 
 const SnakeComponent = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    let timer = useRef<NodeJS.Timeout | undefined>();
     const [direction, setDirection] = useState<Direction>('RIGHT');
     const [snake, setSnake] = useState([{ x: 10, y: 10 }, { x: 9, y: 10 }])
     const [food, setFood] = useState({ x: 5, y: 5 })
@@ -165,15 +164,15 @@ const SnakeComponent = () => {
     //     restoreInitialValues();
     // }
 
-    const restoreInitialValues = () => {
-        setDirection('RIGHT');
-        setSnake([{ x: 10, y: 10 }]);
-        setFood({ x: 5, y: 5 });
-        setGameOver(false);
-        setScore(0);
-        placeFood();
-        draw();
-    }
+    // const restoreInitialValues = () => {
+    //     setDirection('RIGHT');
+    //     setSnake([{ x: 10, y: 10 }]);
+    //     setFood({ x: 5, y: 5 });
+    //     setGameOver(false);
+    //     setScore(0);
+    //     placeFood();
+    //     draw();
+    // }
 
     return (
         <div style={{position:'relative'}}>
