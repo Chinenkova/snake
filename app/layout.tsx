@@ -3,6 +3,9 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Snake Game",
+  icons: {
+    icon: '/snake.png',
+  },
 };
 
 export default function RootLayout({
