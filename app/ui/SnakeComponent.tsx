@@ -8,9 +8,9 @@ const tileSize = 25;
 const spriteSegment = 64;
 type Direction = "LEFT" | "RIGHT" | "UP" | "DOWN";
 type Coordinate = {
-    x: number;
-    y: number;
-}
+  x: number;
+  y: number;
+};
 
 const SnakeComponent = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -27,15 +27,13 @@ const SnakeComponent = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [snakeImage, setSnakeImage] = useState<HTMLImageElement | null>(null);
 
-
   // get high score from storage
   useEffect(() => {
-    const savedHighScore = localStorage.getItem('high-score');
+    const savedHighScore = localStorage.getItem("high-score");
     if (savedHighScore) {
       setHighScore(parseInt(savedHighScore));
     }
   }, []);
-
 
   // load image for snake
   useEffect(() => {
@@ -60,22 +58,24 @@ const SnakeComponent = () => {
     return () => window.removeEventListener("keydown", keyPush);
   }, [direction, inputQueue, isPaused]);
 
-
   const getDirectionFromKey = (key: string) => {
     switch (key) {
       case "ArrowUp":
+      case "w":
         return "UP";
       case "ArrowDown":
+      case "s":
         return "DOWN";
       case "ArrowLeft":
+      case "a":
         return "LEFT";
       case "ArrowRight":
+      case "d":
         return "RIGHT";
       default:
         return null;
     }
   };
-
 
   //we dont want snake to go opposite direction
   const isOppositeDirection = (
@@ -196,7 +196,6 @@ const SnakeComponent = () => {
     };
   };
 
-
   //take sprite's part as snake segment
   const drawSnakeSegment = useCallback(
     (
@@ -313,9 +312,6 @@ const SnakeComponent = () => {
           }
         }
 
-        const width = tileSize;
-        const height = tileSize;
-
         context.drawImage(
           snakeImage,
           spriteX,
@@ -324,13 +320,24 @@ const SnakeComponent = () => {
           spriteSegment,
           x * tileSize,
           y * tileSize,
-          width,
-          height
+          tileSize,
+          tileSize
         );
       }
     },
     [direction, snake.length, snakeImage]
   );
+
+  //draw board as backround
+  const drawBoard = (context: CanvasRenderingContext2D) => {
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        context.fillStyle =
+          (row + col) % 2 === 0 ? "rgb(209 194 77 / 50%)" : "#FFFFFF"; // Чередуем цвета
+        context.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
+      }
+    }
+  };
 
   //canvas drawing
   const draw = useCallback(() => {
@@ -338,6 +345,8 @@ const SnakeComponent = () => {
     const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+    drawBoard(ctx);
 
     snake.forEach((segment, index) => {
       const isHead = index === 0;
@@ -430,7 +439,11 @@ const SnakeComponent = () => {
             <div className={s["end-popup"]}>
               {gameOver ? (
                 <>
-                  <p className={`${s.title} font-semibold text-3xl text-red-600 text-center`}>Game over</p>
+                  <p
+                    className={`${s.title} font-semibold text-3xl text-red-600 text-center`}
+                  >
+                    Game over
+                  </p>
                   <div className={s.score}>
                     <NextImage
                       alt="apple"
@@ -460,7 +473,10 @@ const SnakeComponent = () => {
                 </>
               ) : (
                 <div className="font-semibold text-3xl text-center text-red-600">
-                  Paused <p className="mt-3 font-normal text-xl text-center text-stone-950  ">Press spacebar to resume game</p>
+                  Paused{" "}
+                  <p className="mt-3 font-normal text-xl text-center text-stone-950  ">
+                    Press spacebar to resume game
+                  </p>
                 </div>
               )}
             </div>
