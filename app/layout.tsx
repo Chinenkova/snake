@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Snake Game",
   icons: {
-    icon: '/snake.png',
+    icon: '/icon.png',
   },
 };
 
