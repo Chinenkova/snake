@@ -7,11 +7,15 @@ const gridSize = 30;
 const tileSize = 25;
 const spriteSegment = 64;
 type Direction = "LEFT" | "RIGHT" | "UP" | "DOWN";
+type Coordinate = {
+    x: number;
+    y: number;
+}
 
 const SnakeComponent = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [direction, setDirection] = useState<Direction>("RIGHT");
-  const [snake, setSnake] = useState([
+  const [snake, setSnake] = useState<Coordinate[]>([
     { x: 10, y: 10 },
     { x: 9, y: 10 },
   ]);
@@ -23,6 +27,8 @@ const SnakeComponent = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [snakeImage, setSnakeImage] = useState<HTMLImageElement | null>(null);
 
+
+  // get high score from storage
   useEffect(() => {
     const savedHighScore = localStorage.getItem('high-score');
     if (savedHighScore) {
@@ -31,12 +37,14 @@ const SnakeComponent = () => {
   }, []);
 
 
+  // load image for snake
   useEffect(() => {
     const img = new Image();
     img.src = "snake-sprite.png";
     img.onload = () => setSnakeImage(img);
   }, []);
 
+  //add event listener for keyboard
   useEffect(() => {
     const keyPush = (e: KeyboardEvent) => {
       if (e.key === " ") {
@@ -45,12 +53,13 @@ const SnakeComponent = () => {
       }
       const newDirection = getDirectionFromKey(e.key);
       if (newDirection && !isOppositeDirection(newDirection, direction)) {
-        setInputQueue((prevQueue) => [...prevQueue, newDirection]);
+        setInputQueue((prevQueue) => [...prevQueue, newDirection]); //ensure that all pushes are processed
       }
     };
     window.addEventListener("keydown", keyPush);
     return () => window.removeEventListener("keydown", keyPush);
   }, [direction, inputQueue, isPaused]);
+
 
   const getDirectionFromKey = (key: string) => {
     switch (key) {
@@ -67,6 +76,8 @@ const SnakeComponent = () => {
     }
   };
 
+
+  //we dont want snake to go opposite direction
   const isOppositeDirection = (
     newDirection: string,
     currentDirection: string
@@ -85,17 +96,17 @@ const SnakeComponent = () => {
     }
   };
 
+  //ensure that food is not generated on one of snake;s coordinates
   const generateUniqueFoodPosition = useCallback((): {
     x: number;
     y: number;
   } => {
-    let newPosition: { x: number; y: number } = { x: 5, y: 5 };
+    let newPosition: Coordinate = { x: 5, y: 5 };
     let isPositionValid = false;
 
     while (!isPositionValid) {
       newPosition = generateRandomPosition();
 
-      // Проверяем, не совпадают ли новые координаты с координатами объектов в массиве
       isPositionValid = !snake.some(
         (object) => object.x === newPosition.x && object.y === newPosition.y
       );
@@ -140,6 +151,7 @@ const SnakeComponent = () => {
         break;
     }
 
+    //check collision
     if (
       newHead.x < 0 ||
       newHead.x >= gridSize ||
@@ -177,13 +189,15 @@ const SnakeComponent = () => {
   ]);
 
   // Set random coordinates to place food
-  const generateRandomPosition = (): { x: number; y: number } => {
+  const generateRandomPosition = (): Coordinate => {
     return {
       x: Math.floor(Math.random() * gridSize),
       y: Math.floor(Math.random() * gridSize),
     };
   };
 
+
+  //take sprite's part as snake segment
   const drawSnakeSegment = useCallback(
     (
       context: CanvasRenderingContext2D,
@@ -318,6 +332,7 @@ const SnakeComponent = () => {
     [direction, snake.length, snakeImage]
   );
 
+  //canvas drawing
   const draw = useCallback(() => {
     if (!canvasRef.current) return;
     const ctx = canvasRef.current.getContext("2d");
@@ -357,11 +372,11 @@ const SnakeComponent = () => {
     draw();
   }, [draw, updateSnake]);
 
+  // start/pause/end game loop
   useEffect(() => {
     if (gameOver || isPaused) {
       return;
     }
-    // draw();
     const timeout = setTimeout(() => {
       game();
     }, 100);
