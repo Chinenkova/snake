@@ -17,11 +17,19 @@ const SnakeComponent = () => {
   ]);
   const [food, setFood] = useState({ x: 5, y: 5 });
   const [score, setScore] = useState(0);
-  const [highScore, _] = useState(localStorage.getItem("high-score"));
+  const [highScore, setHighScore] = useState(0);
   const [inputQueue, setInputQueue] = useState<Direction[] | []>([]);
   const [gameOver, setGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [snakeImage, setSnakeImage] = useState<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    const savedHighScore = localStorage.getItem('high-score');
+    if (savedHighScore) {
+      setHighScore(parseInt(savedHighScore));
+    }
+  }, []);
+
 
   useEffect(() => {
     const img = new Image();
